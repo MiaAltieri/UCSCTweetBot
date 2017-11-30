@@ -1,5 +1,6 @@
 from twython import Twython
 import praw
+import time
 
 APP_KEY = 'UU5q3kRrcYDf0LVr6aeXNk9OX'
 APP_SECRET = 'NMt0hoFsTdzUJhDAU9nKPI0WAXmf4vcAaERixPeEKZe6u0UAE1'
@@ -14,15 +15,15 @@ reddit = praw.Reddit(client_id = 'E8cMmZx6DvPs2A',
                      password = 'cookies',
                      user_agent = 'test by /u/RedditSlug')
 
-def tweet(entry):
-    twitter.update_status(status=entry)
 
-def getTweet():
-    subreddit = reddit.subreddit('Showerthoughts')
-    new_thoughts = subreddit.new(limit=100)
-    for submission in new_thoughts:
-        return submission.title
+subreddit = reddit.subreddit('Showerthoughts')
 
-text = getTweet()
-tweet(text)
+while(True):
+    new_thought = subreddit.new(limit=1)
+    try:
+        twitter.update_status(status=new_thought.next().title)
+        print("tweeted")
+    except:
+        print("no new tweet")
+    time.sleep(60)
 
